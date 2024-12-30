@@ -2,7 +2,9 @@
 const config = {
   plugins: {
     tailwindcss: {},
+ 
   },
 };
 
 export default config;
+// src/registry/miami/ui/particles.tsx
