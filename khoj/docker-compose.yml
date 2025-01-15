@@ -1,0 +1,74 @@
+services:
+  database:
+    image: ankane/pgvector
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - khoj_db:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  sandbox:
+    image: ghcr.io/khoj-ai/terrarium:latest
+    ports:
+      - "8080:8080"
+  server:
+    depends_on:
+      database:
+        condition: service_healthy
+    # Use the following line to use the latest version of khoj. Otherwise, it will build from source.
+    image: ghcr.io/khoj-ai/khoj:latest
+    # Uncomment the following line to build from source. This will take a few minutes. Comment the next two lines out if you want to use the offiicial image.
+    # build:
+      # context: .
+    ports:
+      # If changing the local port (left hand side), no other changes required.
+      # If changing the remote port (right hand side),
+      #   change the port in the args in the build section,
+      #   as well as the port in the command section to match
+      - "42110:42110"
+    working_dir: /app
+    volumes:
+      - khoj_config:/root/.khoj/
+      - khoj_models:/root/.cache/torch/sentence_transformers
+    # Use 0.0.0.0 to explicitly set the host ip for the service on the container. https://pythonspeed.com/articles/docker-connection-refused/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - KHOJ_DJANGO_SECRET_KEY=secret
+      - KHOJ_DEBUG=False
+      - KHOJ_ADMIN_EMAIL=username@example.com
+      - KHOJ_ADMIN_PASSWORD=password
+      # Uncomment lines below to use chat models by each provider.
+      # Ensure you set your provider specific API keys.
+      # ---
+      # - OPENAI_API_KEY=your_openai_api_key
+      - GEMINI_API_KEY=AIzaSyDVcLbDQJbpVDU43fpXwwZcRYe8CeD0t1A
+      # - ANTHROPIC_API_KEY=your_anthropic_api_key
+      # Uncomment the necessary lines below to make your instance publicly accessible.
+      # Replace the KHOJ_DOMAIN with either your domain or IP address (no http/https prefix).
+      # Proceed with caution, especially if you are using anonymous mode.
+      # ---
+      # - KHOJ_NO_HTTPS=True
+      # - KHOJ_DOMAIN=192.168.0.104
+      # - KHOJ_DOMAIN=khoj.example.com
+      # Uncomment the line below to disable telemetry.
+      # Telemetry helps us prioritize feature development and understand how people are using Khoj
+      # Read more at https://docs.khoj.dev/miscellaneous/telemetry
+      # - KHOJ_TELEMETRY_DISABLE=True
+    command: --host="0.0.0.0" --port=42110 -vv --anonymous-mode --non-interactive
+
+
+volumes:
+  khoj_config:
+  khoj_db:
+  khoj_models:

@@ -1,0 +1,75 @@
+/* General Reset */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header */
+.site-plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px 20px;
+    color: white;
+}
+
+.site-plan-header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.site-plan-header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+}
+
+.site-plan-header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* Main Content */
+.site-plan {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.site-plan section {
+    margin-bottom: 20px;
+}
+
+.site-plan h1, .site-plan h2 {
+    color: #222;
+    border-bottom: 2px solid #333;
+    padding-bottom: 5px;
+}
+
+.site-plan ul {
+    padding-left: 20px;
+}
+
+.site-plan ul li {
+    margin: 10px 0;
+}
+
+/* Footer */
+.site-plan-footer {
+    text-align: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
